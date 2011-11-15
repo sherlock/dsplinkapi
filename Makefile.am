@@ -21,13 +21,19 @@
 include $(top_srcdir)/Makefile.common
 
 meta80211nsrcdir=$(top_srcdir)/src
-META80211N_INCLUDES =
+DSPLINK := /home/root/ti/dsplink_linux_1_65_00_03/dsplink
+
+
+META80211N_INCLUDES = -I$(DSPLINK)/gpp/inc -I$(DSPLINK)/gpp/inc/usr -I$(DSPLINK)/gpp/inc/sys/Linux -I$(DSPLINK)/gpp/inc/sys/Linux/2.6.18 -I$(BASE_TOOLCHAIN)/arm-angstrom-linux-gnueabi/include/c++/4.5.3 -I$(DSPLINK)/gpp/BUILD/INCLUDE/USER  -I$(DSPLINK)/gpp/export/INCLUDE/Linux/OMAP3530/internal -I./
 
 INCLUDES = $(META80211N_INCLUDES) $(STD_DEFINES_AND_INCLUDES)
 
-noinst_LTLIBRARIES = libmeta-80211n-common.la
-libmeta_80211n_common_la_SOURCES = foo.cc
-libmeta_80211n_common_la_LDFLAGS =
-libmeta_80211n_common_la_LIBADD  =
+noinst_LTLIBRARIES = libdsplinkapi.la
+libdsplinkapi_la_SOURCES = ring_io.c \
+                           ring_io_os.c
+libdsplinkapi_la_LDFLAGS = -lpthread
+libdsplinkapi_la_CPPFLAGS = -DOS_LINUX -DMAX_DSPS=1 -DMAX_PROCESSORS=2 -DID_GPP=1 -DOMAP3530 -DPROC_COMPONENT -DPOOL_COMPONENT -DNOTIFY_COMPONENT -DMPCS_COMPONENT -DRINGIO_COMPONENT -DMPLIST_COMPONENT -DMSGQ_COMPONENT -DMSGQ_ZCPY_LINK -DCHNL_COMPONENT -DCHNL_ZCPY_LINK -DZCPY_LINK -DKFILE_DEFAULT -DOMAP3530 -DOMAP3530_PHYINTERFACE=SHMEM_INTERFACE -DGPP_SWI_MODE -D_REENTRANT 
+libdsplinkapi_la_LIBADD  = $(DSPLINK)/gpp/export/BIN/Linux/OMAP3530/DEBUG/dsplink.lib 
 
-metainclude_HEADERS = foo.h
+metainclude_HEADERS =  ring_io.h \
+                       ring_io_os.h
